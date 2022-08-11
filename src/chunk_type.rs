@@ -2,7 +2,7 @@ use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct ChunkType(u8, u8, u8, u8);
+pub struct ChunkType(u8, u8, u8, u8);
 
 impl ChunkType {
     pub fn new(a: u8, b: u8, c: u8, d: u8) -> ChunkType {
