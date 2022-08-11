@@ -12,19 +12,19 @@ impl ChunkType {
         [self.0, self.1, self.2, self.3]
     }
     pub fn is_valid(&self) -> bool {
-        todo!()
+        self.is_reserved_bit_valid()
     }
     pub fn is_critical(&self) -> bool {
-        todo!()
+        (self.0 & 0x20) == 0
     }
     pub fn is_public(&self) -> bool {
-        todo!()
+        (self.1 & 0x20) == 0
     }
     pub fn is_reserved_bit_valid(&self) -> bool {
-        todo!()
+        (self.2 & 0x20) == 0
     }
     pub fn is_safe_to_copy(&self) -> bool {
-        todo!()
+        (self.3 & 0x20) == 0x20
     }
 }
 
@@ -51,8 +51,18 @@ impl TryFrom<[u8; 4]> for ChunkType {
 
 impl FromStr for ChunkType {
     type Err = std::io::Error;
+
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        todo!()
+        let bytes = s.as_bytes();
+        for byte in bytes {
+            if !byte.is_ascii_alphabetic() {
+                return Err(std::io::Error::new(
+                    std::io::ErrorKind::InvalidInput,
+                    "byte must be ascii characters!",
+                ));
+            }
+        }
+        ChunkType::try_from(bytes)
     }
 }
 
@@ -60,8 +70,8 @@ impl Display for ChunkType {
     fn fmt(&self, f: &mut Formatter) -> Result<(), std::fmt::Error> {
         write!(
             f,
-            "{:02x}{:02x}{:02x}{:02x}",
-            self.0, self.1, self.2, self.3
+            "{}{}{}{}",
+            self.0 as char, self.1 as char, self.2 as char, self.3 as char
         )
     }
 }
